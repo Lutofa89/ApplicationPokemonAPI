@@ -16,7 +16,7 @@
 
                     @foreach( var type in pokemon.types)
                     {
-                        <span>@type.type.name</span> 
+                        <span class="type-badge" style=" background-color: @PokeColor.GetTypeColor(@type.type.name)">@type.type.name</span>
                         <!-- cette line fait référence : Dossier Model=> fichier type public Type2 type { get; set; } 
 
                         après ça on se redirege vers le fichier type2 pour prendre : public string name { get; set; }
