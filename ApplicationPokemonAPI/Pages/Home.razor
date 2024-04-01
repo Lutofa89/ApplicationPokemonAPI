@@ -4,9 +4,32 @@
 
 @inject PokeClient client 
 
-<PageTitle>Home fabrice</PageTitle>
+<div class="container">
+    <div class="pokemon-row">
+        @foreach (var pokemon in pokemonList)
+        {
+            <div class="pokemon-card">
+                <img src="@pokemon.sprites.front_default" alt=" Pokemon Sprite" />
 
-<h1>@pokemon.name</h1>
+                <h4 class="pokemon-name"> @pokemon.name</h4>
+                <div class="type-row">
+
+                    @foreach( var type in pokemon.types)
+                    {
+                        <span>@type.type.name</span> 
+                        <!-- cette line fait référence : Dossier Model=> fichier type public Type2 type { get; set; } 
+
+                        après ça on se redirege vers le fichier type2 pour prendre : public string name { get; set; }
+                        avec ça on arrive à cette ligne  ( <span>@type.type.name</span> ) -->
+                    }
+
+                </div>
+            </div>
+
+        }
+    </div>
+</div>
+
 
 @code {
     Pokemon pokemon = new Pokemon();
@@ -15,9 +38,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        pokemon = await client.GetPokemon("1");
+        
 
-        for(int i = 0; i < 20 ; i++ )
+        for(int i = 1; i < 20 ; i++ )
         {
 
             pokemonList.Add(await client.GetPokemon(i.ToString())); // GetPokemon => voir fichier (("PokeClient"): GetPokemon(string id))
