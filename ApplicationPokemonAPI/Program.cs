@@ -1,6 +1,7 @@
-using ApplicationPokemonAPI.Util;
+using ApplicationPokemonAPI.Util;// j'ai ajouté un using (Util) qui fait le lien avec le dossier Util et le fichier PokeClient.cs
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using ApplicationPokemonAPI; // 
 
 namespace ApplicationPokemonAPI
 {
