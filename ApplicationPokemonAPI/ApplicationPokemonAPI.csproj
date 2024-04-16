@@ -13,4 +13,8 @@
     <PackageReference Include="Twitter.Bootstrap.MVC" Version="2.1.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\image\" />
+  </ItemGroup>
+
 </Project>
