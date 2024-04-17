@@ -28,6 +28,23 @@
             return color;
         }
 
+        public static string GetColor(string stat) 
+        {
+
+            string colort = stat switch
+            {
+                "hp" => "#feoooo",
+                "attack" => "#ee7f30",
+                "defense" => "#f7d02c",
+                "special-attack" => "#f85687",
+                "special-defense" => "#77c755",
+                _ => "#190ff"
+            };
+            return colort;
+        
+        
+        }
+
 
 
     }

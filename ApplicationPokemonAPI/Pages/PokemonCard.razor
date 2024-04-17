@@ -1,0 +1,22 @@
+﻿@page "/pokemon"
+@using ApplicationPokemonAPI.Util
+@using ApplicationPokemonAPI.Models
+@inject PokeClient client
+
+<h1>@pokemon.name</h1>
+
+<img src="@pokemon.sprites.front_default" alt=" " />
+
+
+@code {
+
+    Pokemon pokemon = new Pokemon(); // Il faut ajouter : @using ApplicationPokemonAPI.Models et @using ApplicationPokemonAPI.Util
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        pokemon = await client.GetPokemon("1");
+    }
+
+}
