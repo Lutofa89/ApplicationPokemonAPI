@@ -4,8 +4,18 @@
 
 @inject PokeClient client 
 
-<div class="container">
+@inject NavigationManager NavigationManagerService
 
+@inject IJSRuntime JSRutime
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" /> <!-- lien du site  https://cdnjs.com/libraries/font-awesome, c'est une librairie sur les icones. Avec ça on pourra mettre des icones -->
+
+
+<button class="bouton_pokemon" @onclik="GoToFavoritePage"> Page_favorit</button>
+
+
+<div class="container">
+   
     <img src="/image/Blaeor-Dex.png" alt="app title" class="app-title" />
 
     <div class="pokemon-row">
@@ -15,6 +25,7 @@
                 <img src="@pokemon.sprites.front_default" alt=" Pokemon Sprite" />
 
                 <h4 class="pokemon-name"> @pokemon.name</h4>
+                
                 <div class="type-row">
 
                     @foreach( var type in pokemon.types)
@@ -24,6 +35,7 @@
 
                         après ça on se redirege vers le fichier type2 pour prendre : public string name { get; set; }
                         avec ça on arrive à cette ligne  ( <span>@type.type.name</span> ) -->
+
                     }
 
                 </div>
@@ -36,6 +48,11 @@
 
 @code {
     
+    
+       
+    
+
+
 
     List<Pokemon> pokemonList = new List<Pokemon>();
 
