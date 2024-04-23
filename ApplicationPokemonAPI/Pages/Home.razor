@@ -1,7 +1,7 @@
 ﻿@page "/" 
 @using ApplicationPokemonAPI.Models <!-- j'ai du rajouter un using Mondels pour relier la classe Pokemon.cs' -->
 @using ApplicationPokemonAPI.Util
-
+@using System.Text.Json  <!-- avec cette ligne je peux utiliser  la classe JsonSerializer -->
 @inject PokeClient client 
 
 @inject NavigationManager NavigationManagerService
@@ -21,54 +21,79 @@
     <div class="pokemon-row">
         @foreach (var pokemon in pokemonList)
         {
-            <div class="pokemon-card">
-                <img src="@pokemon.sprites.front_default" alt=" Pokemon Sprite" />
+            <a href="/pokmon/@pokemon.id">
+                <div class="pokemon-card">
+                    <img src="@pokemon.sprites.front_default" alt=" Pokemon Sprite" />
 
-                <h4 class="pokemon-name"> @pokemon.name</h4>
+                    <h4 class="pokemon-name"> @pokemon.name</h4>
                 
-                <div class="type-row">
+                    <div class="type-row">
 
-                    @foreach( var type in pokemon.types)
-                    {
-                        <span class="type-badge" style=" background-color: @PokeColor.GetTypeColor(@type.type.name)">@type.type.name</span>
-                        <!-- cette line fait référence : Dossier Model=> fichier type public Type2 type { get; set; } 
+                        @foreach( var type in pokemon.types)
+                        {
+                            <span class="type-badge" style=" background-color: @PokeColor.GetTypeColor(@type.type.name)">@type.type.name</span>
+                            <!-- cette line fait référence : Dossier Model=> fichier type public Type2 type { get; set; } 
 
-                        après ça on se redirege vers le fichier type2 pour prendre : public string name { get; set; }
-                        avec ça on arrive à cette ligne  ( <span>@type.type.name</span> ) -->
+                            après ça on se redirege vers le fichier type2 pour prendre : public string name { get; set; }
+                            avec ça on arrive à cette ligne  ( <span>@type.type.name</span> ) -->
 
-                    }
+                        }
+                    </div>
 
+                    <div class="action_buttons">
+                        <i class="fas fa-star" @onclick:preventDefault @onclick="() => ToggleFavorite(pokemon)" style="color:@pokemon.IsFavorite ? "red" :"white")"></i> <!--Ajouter l'icone Favorit -->
+
+                    </div>
                 </div>
-            </div>
-
+             </a>
         }
     </div>
 </div>
 
+ @code {
 
-@code {
-    
-    
-       
-    
+            List<Pokemon> pokemonList = new List<Pokemon>();
+
+            protected override async Task OnInitializedAsync()
+            {
 
 
+                for(int i = 1; i < 20 ; i++ )
+                {
 
-    List<Pokemon> pokemonList = new List<Pokemon>();
+                    pokemonList.Add(await client.GetPokemon(i.ToString())); // GetPokemon => voir fichier (("PokeClient"): GetPokemon(string id))
 
-    protected override async Task OnInitializedAsync()
-    {
-        
+                    
+                }
 
-        for(int i = 1; i < 20 ; i++ )
-        {
+            }
 
-            pokemonList.Add(await client.GetPokemon(i.ToString())); // GetPokemon => voir fichier (("PokeClient"): GetPokemon(string id))
+            async Task ToggleFavorite(Pokemon pokemon)
+            {
+                pokemon.IsFavorite = !pokemon.IsFavorite;
 
-            StateHasChanged();
-        }
 
-    }
+                var favoriteJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "favorites");
+                var favoritePokemonIde = favoriteJson != null ? JsonSerializer.Deserialize<List<int>>(favoriteJson) : new List<int>();
+
+                if (pokemon.IsFavorite)
+                {
+
+                    if (!favoritePokemonIde.Contains(pokemon.id))
+                    {
+                        favoritePokemonIde.Add(pokemon.id);
+                    }
+
+                }
+                else
+                {
+                    favoritePokemonIde.Remove(pokemon.id);
+                }
+
+                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "favorites", JsonSerializer.Serialize(favoritePokemonIde));
+
+                StateHasChanged();
+            }
 
 
 
