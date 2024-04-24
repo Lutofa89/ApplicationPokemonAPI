@@ -1,4 +1,5 @@
 ﻿@page "/favoritepokemon"
+@using Util
 @using Models
 @using System.Text.Json
 @inject PokeClient client
@@ -75,6 +76,6 @@ else
 
     async Task UpdateFavoritesInLocalStorage()
     {
-        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "favorites", JsonSerializer.Serialize(favoritePokemonList.Select(p => p.Id)));
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "favorites", JsonSerializer.Serialize(favoritePokemonList.Select(p => p.id)));
     }
 }

@@ -7,7 +7,7 @@
 
 @inject NavigationManager NavigationManagerService
 
-@inject IJSRuntime JS
+@inject IJSRuntime JSRuntime
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" /> <!-- lien du site  https://cdnjs.com/libraries/font-awesome, c'est une librairie sur les icones. Avec ça on pourra mettre des icones -->
 
@@ -100,7 +100,7 @@
                 NavigationManagerService.NavigateTo("/favoritepokemon");
             }
 
-        async Task DeletePokemon(Pokemon pokemon)
+            async Task DeletePokemon(Pokemon pokemon)
         {
              pokemonList.Remove(pokemon); 
 
@@ -108,7 +108,7 @@
             await client.DeletePokemon(pokemon.id);
          }
 
-        void EditPokemon(Pokemon pokemon)
+            void EditPokemon(Pokemon pokemon)
         {
             
 
