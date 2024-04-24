@@ -2,11 +2,12 @@
 @using ApplicationPokemonAPI.Models <!-- j'ai du rajouter un using Mondels pour relier la classe Pokemon.cs' -->
 @using ApplicationPokemonAPI.Util
 @using System.Text.Json  <!-- avec cette ligne je peux utiliser  la classe JsonSerializer -->
+
 @inject PokeClient client 
 
 @inject NavigationManager NavigationManagerService
 
-@inject IJSRuntime JSRutime
+@inject IJSRuntime JS
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" /> <!-- lien du site  https://cdnjs.com/libraries/font-awesome, c'est une librairie sur les icones. Avec ça on pourra mettre des icones -->
 
@@ -58,7 +59,7 @@
             {
 
 
-                for(int i = 1; i < 20 ; i++ )
+                for(int i = 1; i < 6 ; i++ )
                 {
 
                     pokemonList.Add(await client.GetPokemon(i.ToString())); // GetPokemon => voir fichier (("PokeClient"): GetPokemon(string id))
@@ -73,8 +74,8 @@
                 pokemon.IsFavorite = !pokemon.IsFavorite;
 
 
-                var favoriteJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "favorites");
-                var favoritePokemonIde = favoriteJson != null ? JsonSerializer.Deserialize<List<int>>(favoriteJson) : new List<int>();
+                var favoritesJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "favorites");
+                var favoritePokemonIde = favoritesJson != null ? JsonSerializer.Deserialize<List<int>>(favoritesJson) : new List<int>();
 
                 if (pokemon.IsFavorite)
                 {
@@ -94,6 +95,31 @@
 
                 StateHasChanged();
             }
+            void GoToFavoritePage()
+            {
+                NavigationManagerService.NavigateTo("/favoritepokemon");
+            }
+
+        async Task DeletePokemon(Pokemon pokemon)
+        {
+             pokemonList.Remove(pokemon); 
+
+       
+            await client.DeletePokemon(pokemon.id);
+         }
+
+        void EditPokemon(Pokemon pokemon)
+        {
+            
+
+            
+            int pokemonId = pokemon.id;
+
+          
+            NavigationManagerService.NavigateTo($"/editpokemon/{pokemonId}");
+        }
+
+
 
 
 

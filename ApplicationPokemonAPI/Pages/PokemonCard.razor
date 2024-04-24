@@ -1,18 +1,22 @@
-﻿@page "/pokemon"
+﻿@page "/pokemon/{PokmonId}"
 @using ApplicationPokemonAPI.Util
 @using ApplicationPokemonAPI.Models
 @inject PokeClient client
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManagerService
+
 
 <div class="container">
 
     <div class="card">
 
-
-        <div class="card-top">
-
-            <img src="@pokemon.sprites.front_default" alt="pokemon sprite" />
-
-        </div> 
+        @if (pokemon != null && pokemon.types != null && pokemon.types.Count > 0)
+        {
+            <div class="card-top" style="background-color: @PokeColor.GetTypeColor(@pokemon.types[0].type.name)">
+                <img src="@pokemon.sprites.front_default" alt="pokemon sprite" class="card-img-top" />
+            </div>
+        }
         
         <div class="inner-container">
 
@@ -22,17 +26,17 @@
                     <h1 class="pokemon-name card-title">@pokemon.name</h1>
                </div>
                <div class="pokemon-info">
-                   <h5>Height: @pokemon.height m</h5>
-
-                   <div>
-                       @foreach (var type in pokemon.types)
-                        {
-                            <span class="type-badge" style="background-color:@PokeColor.GetTypeColor(@type.type.name)"></span>
-                        }
-
-                   </div>
-
-                    <h5>Weight: @pokemon.weight kg</h5>
+                    @if (pokemon != null)
+                    {
+                        <h5>Height: @PokeUtil.GetPokemonHeightInMeters(pokemon.height) m</h5>
+                        <div>
+                            @foreach (var type in pokemon.types)
+                            {
+                                <span class="type-badge" style="background-color: @PokeColor.GetTypeColor(@type.type.name);">@type.type.name</span>
+                            }
+                        </div>
+                        <h5>Weight: @PokeUtil.GetPokemonWeightInKilograms(pokemon.weight) kg</h5>
+                    }
                </div>
 
             </div>
@@ -44,23 +48,20 @@
                     <img src="/image/icons8-insigne-3-étoiles-48.png"alt="star ball icon"/>
                     <h2>Stats</h2>
                </div>
-               @foreach (var stat in pokemon.stats)
+                @if (pokemon != null && pokemon.stats != null)
                 {
-                    <div class="stat-bar">
-                        
-                        <h5 class="stat">@stat.stat.name: @stat.base_stat</h5>
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped" role="progressbar" style="width: @stat.base_stat%; 
-                            background-color: @PokeColor.GetColor(stat.stat.name)" aria-valuenow="100" aria-valuemin=" 0"
-                            aria-valuemax="200">
-
+                    @foreach (var stat in pokemon.stats)
+                    {
+                        <div class="stat-bar">
+                            <h5 class="stat">@stat.stat.name: @stat.base_stat</h5>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped" role="progressbar" style="width:@stat.base_stat%;
+                                background-color: @PokeColor.GetStatColor(@stat.stat.name);"
+                                     aria-valuenow="100" aria-valuemin="0" aria-valuemax="200">
+                                </div>
                             </div>
                         </div>
-
-                        
-
-                    </div>
-
+                    }
                 }
             </div>
 
@@ -71,16 +72,32 @@
 
 </div>
 
+<button class="pokemon-button" @onclick="GoToHomePage">Go to Home Page</button>
+
+<button class="pokemon-buttonn" @onclick="GoToFavoritePage">Go to Favorites</button>
+
 
 @code {
 
-    Pokemon pokemon = new Pokemon(); // Il faut ajouter : @using ApplicationPokemonAPI.Models et @using ApplicationPokemonAPI.Util
+    [Parameter]
+    public string PokemonId { get; set; }
 
+    Pokemon pokemon;
 
     protected override async Task OnInitializedAsync()
     {
-        
-        pokemon = await client.GetPokemon("1");
+        pokemon = await client.GetPokemon(PokemonId);
     }
+
+    private async Task GoToHomePage()
+    {
+        
+        await JSRuntime.InvokeVoidAsync("window.location.assign", "/");
+    }
+    void GoToFavoritePage()
+    {
+        NavigationManagerService.NavigateTo("/favoritepokemon");
+    }
+}
 
 }
