@@ -38,6 +38,7 @@
                 "defense" => "#f7d02c",
                 "special-attack" => "#f85687",
                 "special-defense" => "#77c755",
+                "speed" => "#678fee",
                 _ => "#190ff"
             };
             return colort;
