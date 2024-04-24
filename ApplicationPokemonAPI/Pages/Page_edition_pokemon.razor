@@ -1,0 +1,68 @@
+﻿@page "/editpokemon/{pokemonId}"
+@using ApplicationPokemonAPI.Models
+@using ApplicationPokemonAPI.Util
+@inject PokeClient client  /* à revoir cette ligne, j'ai pas trop compris le lien ! */
+@inject NavigationManager NavigationManager
+
+<h3>Edit Pokemon</h3>
+
+@if (pokemon != null)
+{
+    <form>
+        <div>
+            <label>Name:</label>
+            <input type="text" @bind="pokemon.name" />
+        </div>
+        <div>
+            <label>Types:</label>
+            @for (int i = 0; i < pokemon.types.Count; i++)
+            {
+                <div>
+                    <input type="text" @bind="pokemon.types[i].type.name" />
+                </div>
+            }
+        </div>
+        <div>
+            <label>Weight:</label>
+            <input type="number" @bind="pokemon.weight" />
+        </div>
+        <div>
+            <label>Height:</label>
+            <input type="number" @bind="pokemon.height" />
+        </div>
+        <button @onclick="SavePokemon">Save</button>
+    </form>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    Pokemon pokemon;
+
+    [Parameter]
+    public string PokemonId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        pokemon = await client.GetPokemon(PokemonId);
+    }
+
+    async Task SavePokemon()
+    {
+        try
+        {
+            // Mettre à jour le Pokemon en utilisant le client PokeClient
+            await client.UpdatePokemon(pokemon);
+
+            // Rediriger vers la page d'accueil après la sauvegarde réussie
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            // Gérer les erreurs en cas d'échec de la mise à jour
+            Console.WriteLine("Error saving Pokemon: " + ex.Message);
+        }
+    }
+}

@@ -1,0 +1,80 @@
+﻿@page "/favoritepokemon"
+@using Models
+@using System.Text.Json
+@inject PokeClient client
+@inject NavigationManager NavigationManagerService
+@inject IJSRuntime JSRuntime
+
+<style>
+    .remove-button {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
+
+<h3>Favorite Pokemon</h3>
+
+@if (favoritePokemonList != null && favoritePokemonList.Any())
+{
+    <div class="pokemon-row">
+        @foreach (var pokemon in favoritePokemonList)
+        {
+            <div class="pokemon-card">
+                <img src="@pokemon.sprites.front_default" alt="Pokemon Sprite">
+                <h4 class="pokemon-name">@pokemon.name</h4>
+                <div class="type-row">
+                    @foreach (var type in pokemon.types)
+                    {
+                        <span class="type-badge" style="background-color: @PokeColor.GetTypeColor(@type.type.name)">@type.type.name</span>
+                    }
+                </div>
+                <!-- Bouton de suppression avec style personnalisé -->
+                <button @onclick="() => RemoveFromFavorites(pokemon)" class="remove-button">
+                    Delete
+                </button>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No favorite Pokémon found.</p>
+}
+
+@code {
+    List<Pokemon> favoritePokemonList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Récupère les Pokémon favoris depuis le stockage local du navigateur
+        var favorites = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "favorites");
+        var favoritePokemonIds = favorites != null ? JsonSerializer.Deserialize<List<int>>(favorites) : new List<int>();
+
+        favoritePokemonList = new List<Pokemon>();
+
+        // Obtient les détails des Pokémon favoris
+        foreach (var Id in favoritePokemonIds)
+        {
+            var pokemon = await client.GetPokemon(Id.ToString());
+            favoritePokemonList.Add(pokemon);
+        }
+    }
+
+    async Task RemoveFromFavorites(Pokemon pokemon)
+    {
+        // Retire le Pokémon de la liste des favoris
+        favoritePokemonList.Remove(pokemon);
+
+        // Met à jour les favoris dans le stockage local
+        await UpdateFavoritesInLocalStorage();
+    }
+
+    async Task UpdateFavoritesInLocalStorage()
+    {
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "favorites", JsonSerializer.Serialize(favoritePokemonList.Select(p => p.Id)));
+    }
+}
