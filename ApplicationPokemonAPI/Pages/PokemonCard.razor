@@ -1,10 +1,13 @@
 ﻿@page "/pokemon/{PokmonId}"
 @using ApplicationPokemonAPI.Util
 @using ApplicationPokemonAPI.Models
-@inject PokeClient client
+@inject IPokeClient client
 
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManagerService
+
+<button class="pokemon-button" @onclick="GoToHomePage">Page d'acceuil</button>
+<button class="pokemon-button" @onclick="GoToFavoritePage">Page favorit</button>
 
 
 <div class="container">
@@ -23,7 +26,7 @@
             <div class=" stats-head">
                <div class="icon-container">
                     <img src=""alt="" />
-                    <h1 class="pokemon-name card-title">@pokemon.name</h1>
+                    <h1 class="pokemon-name card-title">@pokemon?.name</h1>
                </div>
                <div class="pokemon-info">
                     @if (pokemon != null)
@@ -100,4 +103,4 @@
     }
 }
 
-}
+

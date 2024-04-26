@@ -1,7 +1,7 @@
 ﻿@page "/editpokemon/{pokemonId}"
 @using ApplicationPokemonAPI.Models
 @using ApplicationPokemonAPI.Util
-@inject PokeClient client  /* à revoir cette ligne, j'ai pas trop compris le lien ! */
+@inject IPokeClient client
 @inject NavigationManager NavigationManager
 
 <h3>Edit Pokemon</h3>

@@ -6,7 +6,7 @@
         {
             string color = type switch
             {
-                "bug" => "red",
+                "bug" => "ff0000",
                 "dragon" => "#ffeaa7",
                 "electric" => "#fed330",
                 "fairy" => "#ff0069",
