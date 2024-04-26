@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationPokemonAPI.Util
 {
-    public class PokeClient
+    public class PokeClient : IPokeClient
     {
 
         public HttpClient Client { get; set; }
@@ -14,6 +14,9 @@ namespace ApplicationPokemonAPI.Util
         {
             this.Client = client;
         }
+
+        public PokeClient() // c'est le constructeur 
+        { }
 
         public async Task<Pokemon> GetPokemon(string id)
         {
