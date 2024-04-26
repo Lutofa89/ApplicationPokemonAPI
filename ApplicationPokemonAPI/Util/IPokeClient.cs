@@ -2,7 +2,7 @@
 
 namespace ApplicationPokemonAPI.Util
 {
-    public class IPokeClient 
+    public interface IPokeClient 
     {
 
         HttpClient Client { get; set; }
