@@ -8,116 +8,121 @@
 
 @inject IJSRuntime JSRuntime
 
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" /> <!-- lien du site  https://cdnjs.com/libraries/font-awesome, c'est une librairie sur les icones. Avec ça on pourra mettre des icones -->
 
 
-<button class="bouton_pokemon" @onclik="GoToFavoritePage"> Page_favorit</button>
 
+<button class="pokemon-button" @onclick="GoToFavoritePage"> Vers Page favorites</button>
 
 <div class="container">
-   
+
     <img src="/image/Blaeor-Dex.png" alt="app title" class="app-title" />
 
     <div class="pokemon-row">
         @foreach (var pokemon in pokemonList)
         {
-            <a href="/pokmon/@pokemon.id">
+            <a href="/pokemon/@pokemon.id">
                 <div class="pokemon-card">
                     <img src="@pokemon.sprites.front_default" alt=" Pokemon Sprite" />
 
                     <h4 class="pokemon-name"> @pokemon.name</h4>
-                
                     <div class="type-row">
 
-                        @foreach( var type in pokemon.types)
+                        @foreach (var type in pokemon.types)
                         {
                             <span class="type-badge" style=" background-color: @PokeColor.GetTypeColor(@type.type.name)">@type.type.name</span>
-                            <!-- cette line fait référence : Dossier Model=> fichier type public Type2 type { get; set; } 
+                            <!-- cette line fait référence : Dossier Model=> fichier type public Type2 type { get; set; }
 
                             après ça on se redirege vers le fichier type2 pour prendre : public string name { get; set; }
                             avec ça on arrive à cette ligne  ( <span>@type.type.name</span> ) -->
-
                         }
                     </div>
-
                     <div class="action_buttons">
-                        <i class="fas fa-star" @onclick:preventDefault @onclick="() => ToggleFavorite(pokemon)" style="color:@(pokemon.IsFavorite ? "red" :"white")"></i> <!--Ajouter l'icone Favorit -->
+
+                        <!-- Icône -->
+                        <i class="fas fa-star" @onclick:preventDefault @onclick="() => ToggleFavorite(pokemon)" style="color:@(pokemon.IsFavorite ? "red" : "white")"></i>
+
+                        <i class="fas fa-trash-alt" @onclick:preventDefault @onclick="() => DeletePokemon(pokemon)"></i>
+
+                        <i class="fas fa-edit" @onclick:preventDefault @onclick="() => EditPokemon(pokemon)"></i>
+
+
 
                     </div>
                 </div>
-             </a>
+            </a>
         }
     </div>
 </div>
 
- @code {
+@code {
 
-            List<Pokemon> pokemonList = new List<Pokemon>();
+    List<Pokemon> pokemonList = new List<Pokemon>();
 
-            protected override async Task OnInitializedAsync()
-            {
-
-
-                for(int i = 1; i < 10; i++ )
-                {
-
-                    pokemonList.Add(await client.GetPokemon(i.ToString())); // GetPokemon => voir fichier (("PokeClient"): GetPokemon(string id))
-
-                    
-                }
-
-            }
-
-            async Task ToggleFavorite(Pokemon pokemon)
-            {
-                pokemon.IsFavorite = !pokemon.IsFavorite;
+    protected override async Task OnInitializedAsync()
+    {
 
 
-                var favoritesJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "favorites");
-                var favoritePokemonIde = favoritesJson != null ? JsonSerializer.Deserialize<List<int>>(favoritesJson) : new List<int>();
-
-                if (pokemon.IsFavorite)
-                {
-
-                    if (!favoritePokemonIde.Contains(pokemon.id))
-                    {
-                        favoritePokemonIde.Add(pokemon.id);
-                    }
-
-                }
-                else
-                {
-                    favoritePokemonIde.Remove(pokemon.id);
-                }
-
-                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "favorites", JsonSerializer.Serialize(favoritePokemonIde));
-
-                StateHasChanged();
-            }
-            void GoToFavoritePage()
-            {
-                NavigationManagerService.NavigateTo("/favoritepokemon");
-            }
-
-            async Task DeletePokemon(Pokemon pokemon)
+        for (int i = 1; i < 20; i++)
         {
-             pokemonList.Remove(pokemon); 
 
-       
-            await client.DeletePokemon(pokemon.id);
-         }
+            pokemonList.Add(await client.GetPokemon(i.ToString())); // GetPokemon => voir fichier (("PokeClient"): GetPokemon(string id))
 
-            void EditPokemon(Pokemon pokemon)
-        {
-            
 
-            
-            int pokemonId = pokemon.id;
-
-          
-            NavigationManagerService.NavigateTo($"/editpokemon/{pokemonId}");
         }
 
+    }
+
+    async Task ToggleFavorite(Pokemon pokemon)
+    {
+        pokemon.IsFavorite = !pokemon.IsFavorite;
+
+
+        var favoritesJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "favorites");
+        var favoritePokemonIde = favoritesJson != null ? JsonSerializer.Deserialize<List<int>>(favoritesJson) : new List<int>();
+
+        if (pokemon.IsFavorite)
+        {
+
+            if (!favoritePokemonIde.Contains(pokemon.id))
+            {
+                favoritePokemonIde.Add(pokemon.id);
+            }
+
+        }
+        else
+        {
+            favoritePokemonIde.Remove(pokemon.id);
+        }
+
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "favorites", JsonSerializer.Serialize(favoritePokemonIde));
+
+        StateHasChanged();
+    }
+    void GoToFavoritePage()
+    {
+        NavigationManagerService.NavigateTo("/favoritepokemon");
+    }
+
+    async Task DeletePokemon(Pokemon pokemon)
+    {
+        pokemonList.Remove(pokemon);
+
+
+        await client.DeletePokemon(pokemon.id);
+    }
+
+    void EditPokemon(Pokemon pokemon)
+    {
+
+
+
+        int pokemonId = pokemon.id;
+
+
+        NavigationManagerService.NavigateTo($"/editpokemon/{pokemonId}");
+    }
 
 
 

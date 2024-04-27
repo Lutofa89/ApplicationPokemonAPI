@@ -6,9 +6,9 @@
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManagerService
 
-<button class="pokemon-button" @onclick="GoToHomePage">Page d'acceuil</button>
-<button class="pokemon-button" @onclick="GoToFavoritePage">Page favorit</button>
 
+<button class="pokemon-button" @onclick="GoToHomePage">Go to Home Page</button>
+<button class="pokemon-button" @onclick="GoToFavoritePage">Go to Favorites</button>
 
 <div class="container">
 
@@ -20,15 +20,15 @@
                 <img src="@pokemon.sprites.front_default" alt="pokemon sprite" class="card-img-top" />
             </div>
         }
-        
+
         <div class="inner-container">
 
             <div class=" stats-head">
-               <div class="icon-container">
-                    <img src=""alt="" />
+                <div class="icon-container">
+                    <img src="" alt="" />
                     <h1 class="pokemon-name card-title">@pokemon?.name</h1>
-               </div>
-               <div class="pokemon-info">
+                </div>
+                <div class="pokemon-info">
                     @if (pokemon != null)
                     {
                         <h5>Height: @PokemonUtil.GetPokemonHeightInMeters(pokemon.height) m</h5>
@@ -40,17 +40,17 @@
                         </div>
                         <h5>Weight: @PokemonUtil.GetPokemonWeightInKilograms(pokemon.weight) kg</h5>
                     }
-               </div>
+                </div>
 
             </div>
 
-            
+
 
             <div class=" stats-head">
-               <div class="icon-container">
-                    <img src="/image/icons8-insigne-3-étoiles-48.png"alt="star ball icon"/>
+                <div class="icon-container">
+                    <img src="/image/icons8-insigne-3-étoiles-48.png" alt="star ball icon" />
                     <h2>Stats</h2>
-               </div>
+                </div>
                 @if (pokemon != null && pokemon.stats != null)
                 {
                     @foreach (var stat in pokemon.stats)
@@ -75,9 +75,7 @@
 
 </div>
 
-<button class="pokemon-button" @onclick="GoToHomePage">Go to Home Page</button>
 
-<button class="pokemon-buttonn" @onclick="GoToFavoritePage">Go to Favorites</button>
 
 
 @code {
@@ -85,7 +83,7 @@
     [Parameter]
     public string PokemonId { get; set; }
 
-    Pokemon pokemon;
+    public Pokemon pokemon { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,7 +92,7 @@
 
     private async Task GoToHomePage()
     {
-        
+
         await JSRuntime.InvokeVoidAsync("window.location.assign", "/");
     }
     void GoToFavoritePage()

@@ -6,7 +6,7 @@
         {
             string color = type switch
             {
-                "bug" => "ff0000",
+                "bug" => "red",
                 "dragon" => "#ffeaa7",
                 "electric" => "#fed330",
                 "fairy" => "#ff0069",
@@ -28,7 +28,7 @@
             return color;
         }
 
-        public static string GetColor(string stat) 
+        public static string GetColor(string stat)
         {
 
             string colort = stat switch
@@ -42,8 +42,8 @@
                 _ => "#190ff"
             };
             return colort;
-        
-        
+
+
         }
 
 

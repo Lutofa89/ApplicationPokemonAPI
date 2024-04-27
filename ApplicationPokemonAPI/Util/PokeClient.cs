@@ -17,7 +17,6 @@ namespace ApplicationPokemonAPI.Util
 
         public PokeClient() // c'est le constructeur 
         { }
-
         public async Task<Pokemon> GetPokemon(string id)
         {
             var response = await this.Client.GetAsync($"https://pokeapi.co/api/v2/pokemon/{id}");
@@ -31,7 +30,7 @@ namespace ApplicationPokemonAPI.Util
                 PropertyNameCaseInsensitive = true
             };
 
-            return JsonSerializer.Deserialize<Pokemon>(content,options);
+            return JsonSerializer.Deserialize<Pokemon>(content, options);
         }
         // Méthode pour marquer un Pokemon comme favori
         public async Task ToggleFavoritePokemon(int pokemonId, bool isFavorite)
