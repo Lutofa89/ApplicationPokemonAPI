@@ -41,7 +41,7 @@
                     <div class="action_buttons">
 
                         <!-- Icône -->
-                        <i class="fas fa-star" @onclick:preventDefault @onclick="() => ToggleFavorite(pokemon)" style="color:@(pokemon.IsFavorite ? "red" : "white")"></i>
+                        <i class="fas fa-star" @onclick:preventDefault @onclick="() => ToggleFavorite(pokemon)" style="color:@(pokemon.IsFavorite ? "red" : "yello")"></i>
 
                         <i class="fas fa-trash-alt" @onclick:preventDefault @onclick="() => DeletePokemon(pokemon)"></i>
 
@@ -64,7 +64,7 @@
     {
 
 
-        for (int i = 1; i < 20; i++)
+        for (int i = 1; i < 10; i++)
         {
 
             pokemonList.Add(await client.GetPokemon(i.ToString())); // GetPokemon => voir fichier (("PokeClient"): GetPokemon(string id))
